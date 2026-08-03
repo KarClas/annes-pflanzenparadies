@@ -14,7 +14,7 @@
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { gt, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { db } from '../lib/db';
 import {
   pflanzen,
@@ -22,6 +22,7 @@ import {
   basisPflege,
   ernten,
   einstellungen,
+  fotos,
   type Darstellung,
 } from '../lib/db/schema';
 
@@ -115,25 +116,40 @@ function erntenVereinen(grund: RohErnte[], browser: RohErnte[], geloescht: Set<n
 }
 
 /**
- * Notbremse: Sind seit der Sicherung neue Einträge dazugekommen?
+ * Notbremse: läuft der Import gegen eine Datenbank, in der schon etwas steht?
  *
- * Das Skript räumt die Tabellen leer. Läuft es versehentlich ein zweites Mal,
- * wäre alles verloren, was Anne seither eingetragen hat. Deshalb zählt es
- * vorher nach und bricht ab — wer trotzdem will, hängt `--wirklich` an.
+ * Das Skript ist ein Umzugswerkzeug für eine leere Datenbank. Es räumt alle
+ * Tabellen leer — und weil die Fotos an den Pflanzen hängen, verschwinden sie
+ * gleich mit. Deshalb die harte Regel: **enthält die Datenbank irgendetwas,
+ * wird nicht importiert.**
+ *
+ * Eine frühere Fassung verglich nur Zeitstempel gegen die Sicherung. Das war
+ * zu weich: direkt nach einer frischen Sicherung war nichts mehr „neuer" — und
+ * der Import lief durch. Genau so sind am 3.8.2026 die Fotos verschwunden.
  */
-async function neueresPruefen(stand: string) {
-  const grenze = new Date(stand);
-  const [{ anzahl }] = await db
-    .select({ anzahl: sql<number>`count(*)::int` })
-    .from(aktivitaeten)
-    .where(gt(aktivitaeten.erfasstAm, grenze));
+async function leereDatenbankPruefen() {
+  const bestand: [string, number][] = [];
+  for (const [name, tabelle] of [
+    ['Pflanzen', pflanzen],
+    ['Pflegetermine', aktivitaeten],
+    ['Ernten', ernten],
+    ['Fotos', fotos],
+  ] as const) {
+    const [{ anzahl }] = await db
+      .select({ anzahl: sql<number>`count(*)::int` })
+      .from(tabelle);
+    if (anzahl > 0) bestand.push([name, anzahl]);
+  }
 
-  if (anzahl > 0 && !process.argv.includes('--wirklich')) {
+  if (bestand.length && !process.argv.includes('--wirklich')) {
     console.error(
-      `\nABGEBROCHEN: In der Datenbank stehen ${anzahl} Pflegeeinträge, die nach der\n` +
-        `Sicherung (${stand}) gemacht wurden. Ein Import würde sie löschen.\n\n` +
-        `Erst eine frische Sicherung nach daten/ legen — oder, wenn der Verlust\n` +
-        `wirklich gewollt ist, mit --wirklich erzwingen.`,
+      `\nABGEBROCHEN: In der Datenbank steht bereits etwas.\n\n` +
+        bestand.map(([n, z]) => `    ${n.padEnd(16)} ${z}`).join('\n') +
+        `\n\nDieses Skript räumt alle Tabellen leer und baut sie aus daten/ neu auf.\n` +
+        `Fotos hängen an den Pflanzen und verschwänden mit — sie stehen in keiner\n` +
+        `Sicherungsdatei und wären nur über "npm run fotos:import" wiederzubekommen,\n` +
+        `soweit die Bilddateien noch in public/fotos/ liegen.\n\n` +
+        `Wenn der Neuaufbau wirklich gewollt ist: --wirklich anhängen.`,
     );
     process.exit(1);
   }
@@ -146,7 +162,7 @@ async function main() {
   console.log(`Stammdaten : daten/pflanzen.json (Stand ${stamm.aktualisiert})`);
   console.log(`Sicherung  : daten/${datei} (${sicherung.gesichert})\n`);
 
-  await neueresPruefen(sicherung.gesichert);
+  await leereDatenbankPruefen();
 
   const grundstock = stamm.grundstock ?? {};
   const browserDaten = sicherung.daten ?? {};

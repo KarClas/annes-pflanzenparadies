@@ -1,0 +1,320 @@
+{
+ "format": "balkon-garten-sicherung",
+ "version": 1,
+ "gesichert": "2026-08-03T20:26:29.018Z",
+ "daten": {
+  "garten:aktivitaet": {
+   "tomaten": {
+    "n_gegossen": 7,
+    "geduengt": "2026-07-27T20:35:34.981Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:36.628Z"
+   },
+   "kartoffeln": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:38:06.093Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:23.477Z"
+   },
+   "habanero": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:37:37.784Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:20.679Z"
+   },
+   "paprika": {
+    "n_gegossen": 7,
+    "gegossen": "2026-08-02T15:09:10.985Z",
+    "geduengt": "2026-07-27T20:44:21.303Z",
+    "n_geduengt": 1
+   },
+   "stachelbeere": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:44:12.484Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T15:09:14.015Z"
+   },
+   "erdbeeren": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:43:56.863Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T14:54:13.948Z"
+   },
+   "basilikum": {
+    "n_gegossen": 8,
+    "geduengt": "2026-07-27T20:43:50.261Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:09:25.030Z"
+   },
+   "koriander": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:43:40.325Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T14:54:16.093Z"
+   },
+   "minze": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:43:01.297Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T14:54:18.232Z"
+   },
+   "grapefruitminze": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:42:54.663Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T14:54:20.215Z"
+   },
+   "erdbeerminze": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:42:46.825Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T14:54:22.092Z"
+   },
+   "rucola": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T20:42:26.722Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T14:54:24.814Z"
+   },
+   "brassica": {
+    "n_gegossen": 4,
+    "gegossen": "2026-08-02T14:54:27.859Z",
+    "geduengt": "2026-07-27T20:42:19.617Z",
+    "n_geduengt": 1
+   },
+   "celosia": {
+    "n_gegossen": 4,
+    "gegossen": "2026-08-02T15:09:17.911Z",
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1
+   },
+   "calibrachoa": {
+    "n_gegossen": 8,
+    "geduengt": "2026-07-27T20:42:04.696Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:17.660Z"
+   },
+   "suesskartoffel": {
+    "n_gegossen": 8,
+    "gegossen": "2026-08-03T20:17:32.670Z",
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1
+   },
+   "fruehlingszwiebeln": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T15:09:19.966Z"
+   },
+   "avocados": {
+    "n_gegossen": 3,
+    "gegossen": "2026-08-02T15:09:22.386Z",
+    "geduengt": "2026-07-27T20:40:54.975Z",
+    "n_geduengt": 1
+   },
+   "basilikum-2": {
+    "n_gegossen": 8,
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:16.026Z"
+   },
+   "strauchbasilikum": {
+    "n_gegossen": 8,
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:29.968Z"
+   },
+   "kartoffeln-2": {
+    "n_gegossen": 4,
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T14:48:23.808Z"
+   },
+   "tomaten-2": {
+    "n_gegossen": 8,
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:37.365Z"
+   },
+   "kaesekraut": {
+    "n_gegossen": 2,
+    "gegossen": "2026-08-01T21:08:07.234Z"
+   },
+   "kraehen-zwiebeln": {
+    "n_gegossen": 2,
+    "gegossen": "2026-08-01T21:08:35.323Z"
+   },
+   "avocado-saemlinge": {
+    "n_gegossen": 2,
+    "geduengt": "2026-07-30T21:24:17.578Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-02T15:09:24.752Z"
+   },
+   "ufopflanze": {
+    "gegossen": "2026-07-28T21:59:15.157Z",
+    "n_gegossen": 1,
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1
+   },
+   "orchidee": {
+    "gegossen": "2026-07-28T21:59:18.344Z",
+    "n_gegossen": 1,
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1
+   },
+   "wasserlilien": {
+    "geduengt": "2026-07-27T20:41:17.515Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-07-27T20:41:15.148Z",
+    "n_gegossen": 1
+   },
+   "bogenhanf": {
+    "gegossen": "2026-07-27T20:41:02.997Z",
+    "n_gegossen": 1,
+    "geduengt": "2026-07-27T20:41:06.179Z",
+    "n_geduengt": 1
+   },
+   "zimmerpalme": {
+    "gegossen": "2026-07-27T20:44:49.378Z",
+    "n_gegossen": 1,
+    "geduengt": "2026-07-27T10:00:00.000Z",
+    "n_geduengt": 1
+   },
+   "efeututen": {
+    "geduengt": "2026-07-27T20:41:26.651Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:18.517Z",
+    "n_gegossen": 2
+   },
+   "monstera": {
+    "gegossen": "2026-08-03T20:17:25.860Z",
+    "n_gegossen": 2,
+    "geduengt": "2026-07-27T20:41:34.556Z",
+    "n_geduengt": 1
+   },
+   "zitronenthymian": {
+    "gegossen": "2026-08-03T20:17:38.741Z",
+    "n_gegossen": 2
+   },
+   "weihnachtskaktus": {
+    "gegossen": "2026-07-30T12:00:00.000Z",
+    "n_gegossen": 1
+   },
+   "rosmarin": {
+    "geduengt": "2026-07-27T20:43:06.637Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-08-03T20:17:28.964Z",
+    "n_gegossen": 2
+   },
+   "geldbaum": {
+    "geduengt": "2026-07-30T21:24:11.722Z",
+    "n_geduengt": 1,
+    "gegossen": "2026-07-30T12:00:00.000Z",
+    "n_gegossen": 1
+   }
+  },
+  "garten:ernte": [
+   {
+    "eid": 1785788348264,
+    "pflanzeId": "tomaten",
+    "datum": "2026-08-03",
+    "menge": "1",
+    "notiz": "es war meinem Mund eine Ehre. Bei Gott war die lecker."
+   },
+   {
+    "eid": 1785657690425,
+    "pflanzeId": "tomaten",
+    "datum": "2026-08-02",
+    "menge": "1",
+    "notiz": "kleine, schrumpelige Tomate mit faszinierendem Aroma"
+   },
+   {
+    "eid": 1785619701519,
+    "pflanzeId": "kraehen-zwiebeln",
+    "datum": "2026-08-01",
+    "menge": "2 Büschel Zwiebelgrün",
+    "notiz": "super! Wurde für die Zucchini Nudel verwendet, Mild und zwiebelig."
+   },
+   {
+    "eid": 1785618808895,
+    "pflanzeId": "grapefruitminze",
+    "datum": "2026-08-01",
+    "menge": "1 Zweig",
+    "notiz": "eine wohlschmeckende Garnitur für die Zucchini Nudeln!"
+   },
+   {
+    "eid": 1785618751954,
+    "pflanzeId": "minze",
+    "datum": "2026-08-01",
+    "menge": "3 Zweige",
+    "notiz": "sehr lecker! Wurde in Zucchini Nudeln verarbeitet, gab ein tolles Aroma. Blüten und Stängel werden für Tee aufgehoben.."
+   },
+   {
+    "eid": 1785537188886,
+    "pflanzeId": "koriander",
+    "datum": "2026-07-31",
+    "menge": "1-2 Zweigchen",
+    "notiz": "für Guacamole. Sehr zart und lecker!"
+   },
+   {
+    "eid": 1785537107848,
+    "pflanzeId": "basilikum-2",
+    "datum": "2026-07-31",
+    "menge": "eine Hand voll",
+    "notiz": "für Olli"
+   },
+   {
+    "eid": 1785446870576,
+    "pflanzeId": "basilikum-2",
+    "datum": "2026-07-30",
+    "menge": "eine halbe Schüssel voll",
+    "notiz": "Habe die größten Blätter entfernt , Pesto war geil!"
+   },
+   {
+    "eid": 1785446826759,
+    "pflanzeId": "basilikum",
+    "datum": "2026-07-30",
+    "menge": "eine halbe Schüssel voll",
+    "notiz": "Habe die Pflanze oben beschnitten und die größten Blätter entfernt. Anschließend köstliches Pesto hergestellt!"
+   },
+   {
+    "eid": 1785446213880,
+    "pflanzeId": "tomaten",
+    "datum": "2026-07-29",
+    "menge": "1",
+    "notiz": "etwas zu früh geerntet, fiel mir zwar entgegen, war jedoch noch nicht ganz reif, obwohl rot."
+   },
+   {
+    "eid": 1785268585195,
+    "pflanzeId": "tomaten",
+    "datum": "2026-07-28",
+    "menge": "2",
+    "notiz": "himmlisch, sehr aromatisch (eine war geplatzt, trotzdem hervorragender Geschmack)"
+   },
+   {
+    "eid": 1785270187841,
+    "pflanzeId": "minze",
+    "datum": "2026-07-25",
+    "menge": "2 Stängel",
+    "notiz": "sehr lecker! passte perfekt in den rote Beete Salat"
+   },
+   {
+    "eid": 1785268543657,
+    "pflanzeId": "tomaten-2",
+    "datum": "2026-07-25",
+    "menge": "1",
+    "notiz": "wunderbar"
+   },
+   {
+    "eid": 1785268439047,
+    "pflanzeId": "basilikum-2",
+    "datum": "2026-07-17",
+    "menge": "eine große Schüssel voll",
+    "notiz": "fantastisch! wurde zu köstlichem Pesto verarbeitet"
+   }
+  ],
+  "garten:eigene": [],
+  "garten:geloescht": [],
+  "garten:thema": "herbarium"
+ }
+}
