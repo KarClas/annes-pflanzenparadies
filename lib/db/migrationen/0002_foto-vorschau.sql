@@ -1,0 +1,1 @@
+ALTER TABLE "fotos" ADD COLUMN "vorschau" "bytea";

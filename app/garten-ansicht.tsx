@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { portraet } from '@/lib/garten/portraet';
+import { verkleinern, groesse } from '@/lib/garten/bild-verkleinern';
 import { fruchtFuer } from '@/lib/garten/fruechte';
 import { rankeSVG, rankenHoehe, rankenWachsen } from '@/lib/garten/ranken';
 import {
@@ -10,6 +11,7 @@ import {
   STUFEN,
   anzahlAus,
   faelligAm,
+  fotosVon,
   haeufigkeit,
   heute,
   letzteInteraktion,
@@ -20,6 +22,7 @@ import {
   wachstum,
   wuchsStufe,
   type Ernte,
+  type FotoInfo,
   type Garten,
   type Pflanze,
   type PlanArt,
@@ -27,6 +30,9 @@ import {
 import {
   ernteEintragen,
   ernteLoeschen,
+  fotoDatumSetzen,
+  fotoHochladen,
+  fotoLoeschen,
   pflegeEintragen,
   sammelPflege,
   themaSetzen,
@@ -36,9 +42,11 @@ type Eigenschaften = {
   garten: Garten;
   thema: string;
   standort: { balkon?: string; besonderheiten?: string };
-  fotos: string[];
   darfSchreiben: boolean;
 };
+
+/** Was gerade groß angezeigt wird. */
+type Lupenbild = { foto: FotoInfo; pflanze: Pflanze | null };
 
 const REITER = [
   ['pflanzen', 'Pflanzen'],
@@ -56,17 +64,14 @@ export default function GartenAnsicht({
   garten,
   thema: themaAnfang,
   standort,
-  fotos,
   darfSchreiben,
 }: Eigenschaften) {
   const [tab, setTab] = useState<string>('pflanzen');
   const [filter, setFilter] = useState('alle');
   const [offen, setOffen] = useState<string | null>(null);
   const [thema, setThema] = useState(themaAnfang);
-  const [lupe, setLupe] = useState<Pflanze | null>(null);
+  const [lupe, setLupe] = useState<Lupenbild | null>(null);
   const [, uebergang] = useTransition();
-
-  const fotoVorhanden = new Set(fotos);
 
   // ── Ranken ──────────────────────────────────────────────
   const linksRef = useRef<HTMLDivElement>(null);
@@ -115,18 +120,7 @@ export default function GartenAnsicht({
       </div>
 
       {lupe && (
-        <div className="lupe" onClick={() => setLupe(null)}>
-          <figure>
-            {/* Keine Bildoptimierung: die Fotos liegen unverändert im Projekt
-                und sollen genau so gezeigt werden. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`/fotos/${lupe.foto}.jpg`} alt={lupe.name} />
-            <figcaption>
-              {lupe.name}
-              <small>{STUFEN[wuchsStufe(lupe, garten) - 1]}</small>
-            </figcaption>
-          </figure>
-        </div>
+        <Lupe bild={lupe} schliessen={() => setLupe(null)} darfSchreiben={darfSchreiben} />
       )}
 
       <div className="ranke links" ref={linksRef} />
@@ -185,12 +179,89 @@ export default function GartenAnsicht({
               setFilter={setFilter}
               offen={offen}
               setOffen={setOffen}
-              fotoVorhanden={fotoVorhanden}
               setLupe={setLupe}
+              darfSchreiben={darfSchreiben}
             />
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+// ── Foto groß ─────────────────────────────────────────────
+
+function Lupe({
+  bild,
+  schliessen,
+  darfSchreiben,
+}: {
+  bild: Lupenbild;
+  schliessen: () => void;
+  darfSchreiben: boolean;
+}) {
+  const { foto, pflanze } = bild;
+  const [datum, setDatum] = useState(foto.aufgenommenAm ?? heute());
+  const [läuft, uebergang] = useTransition();
+
+  // Mit Escape schließen — schneller als zum Rand zu zielen.
+  useEffect(() => {
+    const taste = (e: KeyboardEvent) => e.key === 'Escape' && schliessen();
+    window.addEventListener('keydown', taste);
+    return () => window.removeEventListener('keydown', taste);
+  }, [schliessen]);
+
+  return (
+    <div className="lupe" onClick={schliessen}>
+      {/* Innerhalb nicht schließen — sonst verschwindet das Bild beim Tippen
+          ins Datumsfeld. */}
+      <figure onClick={(e) => e.stopPropagation()}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`/bild/${foto.id}`} alt={pflanze?.name ?? 'Gartenfoto'} />
+        <figcaption>
+          {pflanze?.name ?? 'Gartenfoto'}
+          <small>
+            {foto.aufgenommenAm
+              ? new Date(foto.aufgenommenAm + 'T12:00:00').toLocaleDateString('de-DE', {
+                  day: '2-digit',
+                  month: 'long',
+                  year: 'numeric',
+                })
+              : 'Aufnahmedatum unbekannt'}
+          </small>
+          {foto.notiz && <small>{foto.notiz}</small>}
+        </figcaption>
+
+        {darfSchreiben && (
+          <div className="lupe-werkzeug">
+            <input
+              type="date"
+              value={datum}
+              onChange={(e) => setDatum(e.target.value)}
+              aria-label="Aufnahmedatum"
+            />
+            <button
+              className="knopf"
+              disabled={läuft || datum === foto.aufgenommenAm}
+              onClick={() => uebergang(async () => void (await fotoDatumSetzen(foto.id, datum)))}
+            >
+              {foto.aufgenommenAm ? 'Datum ändern' : 'Datum eintragen'}
+            </button>
+            <button
+              className="knopf zweit"
+              disabled={läuft}
+              onClick={() =>
+                uebergang(async () => {
+                  await fotoLoeschen(foto.id);
+                  schliessen();
+                })
+              }
+            >
+              Foto entfernen
+            </button>
+          </div>
+        )}
+      </figure>
     </div>
   );
 }
@@ -315,16 +386,16 @@ function ListenAnsicht({
   setFilter,
   offen,
   setOffen,
-  fotoVorhanden,
   setLupe,
+  darfSchreiben,
 }: {
   garten: Garten;
   filter: string;
   setFilter: (f: string) => void;
   offen: string | null;
   setOffen: (id: string | null) => void;
-  fotoVorhanden: Set<string>;
-  setLupe: (p: Pflanze | null) => void;
+  setLupe: (b: Lupenbild | null) => void;
+  darfSchreiben: boolean;
 }) {
   let liste = garten.pflanzen;
   if (filter === 'draussen') liste = liste.filter((p) => p.standort === 'draussen');
@@ -353,7 +424,9 @@ function ListenAnsicht({
       {liste.length ? (
         liste.map((p) => {
           const stufe = wuchsStufe(p, garten);
-          const hatFoto = p.foto && fotoVorhanden.has(p.foto);
+          const bilder = fotosVon(p.id, garten.fotos);
+          // In der Zeile das jüngste Bild — das zeigt den heutigen Zustand.
+          const neustes = bilder[bilder.length - 1];
           return (
             <div key={p.id}>
               <div className="zeile" onClick={() => setOffen(offen === p.id ? null : p.id)}>
@@ -370,23 +443,34 @@ function ListenAnsicht({
                     <span className="marke">{STUFEN[stufe - 1]}</span>
                   </div>
                 </div>
-                {hatFoto ? (
+                {neustes ? (
                   <div
                     className="foto"
-                    title="Foto vergrößern"
+                    title={`Foto vergrößern${bilder.length > 1 ? ` (${bilder.length} insgesamt)` : ''}`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setLupe(p);
+                      setLupe({ foto: neustes, pflanze: p });
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/fotos/${p.foto}_klein.jpg`} alt={p.name} loading="lazy" />
+                    <img
+                      src={`/bild/${neustes.id}${neustes.hatVorschau ? '?klein' : ''}`}
+                      alt={p.name}
+                      loading="lazy"
+                    />
                   </div>
                 ) : (
                   <div className="foto-leer" title="noch kein Foto" />
                 )}
               </div>
-              {offen === p.id && <Detail p={p} garten={garten} />}
+              {offen === p.id && (
+                <Detail
+                  p={p}
+                  garten={garten}
+                  setLupe={setLupe}
+                  darfSchreiben={darfSchreiben}
+                />
+              )}
             </div>
           );
         })
@@ -402,7 +486,17 @@ function ListenAnsicht({
   );
 }
 
-function Detail({ p, garten }: { p: Pflanze; garten: Garten }) {
+function Detail({
+  p,
+  garten,
+  setLupe,
+  darfSchreiben,
+}: {
+  p: Pflanze;
+  garten: Garten;
+  setLupe: (b: Lupenbild | null) => void;
+  darfSchreiben: boolean;
+}) {
   const stufe = wuchsStufe(p, garten);
   const ernten = garten.ernten.filter((e) => e.pflanzeId === p.id).length;
   const zeile = (t: string, w?: string | null) =>
@@ -440,6 +534,142 @@ function Detail({ p, garten }: { p: Pflanze; garten: Garten }) {
       )}
       {ernten > 0 && zeile('Geerntet', `${ernten}× bisher`)}
       {zeile('Wuchs', `Stufe ${stufe} von ${MAX_STUFE} — ${STUFEN[stufe - 1]}`)}
+      <Verlauf p={p} garten={garten} setLupe={setLupe} darfSchreiben={darfSchreiben} />
+    </div>
+  );
+}
+
+// ── Wachstumsverlauf ──────────────────────────────────────
+
+function Verlauf({
+  p,
+  garten,
+  setLupe,
+  darfSchreiben,
+}: {
+  p: Pflanze;
+  garten: Garten;
+  setLupe: (b: Lupenbild | null) => void;
+  darfSchreiben: boolean;
+}) {
+  const bilder = fotosVon(p.id, garten.fotos);
+  const dateiwahl = useRef<HTMLInputElement>(null);
+  const [arbeitet, setArbeitet] = useState(false);
+  const [fehler, setFehler] = useState('');
+  const [bilanz, setBilanz] = useState('');
+  const [, uebergang] = useTransition();
+
+  async function ausgewaehlt(e: React.ChangeEvent<HTMLInputElement>) {
+    const dateien = Array.from(e.target.files ?? []);
+    e.target.value = ''; // damit dasselbe Bild erneut gewählt werden kann
+    if (!dateien.length) return;
+
+    setFehler('');
+    setBilanz('');
+    setArbeitet(true);
+    let vorher = 0;
+    let nachher = 0;
+    try {
+      for (const datei of dateien) {
+        const { gross, klein, breite, hoehe } = await verkleinern(datei);
+        vorher += datei.size;
+        nachher += gross.size + klein.size;
+
+        const formular = new FormData();
+        formular.set('pflanzeId', p.id);
+        formular.set('bild', gross, 'foto.jpg');
+        formular.set('vorschau', klein, 'vorschau.jpg');
+        formular.set('breite', String(breite));
+        formular.set('hoehe', String(hoehe));
+        // Das Änderungsdatum der Datei ist bei Handyfotos der Aufnahmetag.
+        formular.set(
+          'datum',
+          new Date(datei.lastModified || Date.now()).toISOString().slice(0, 10),
+        );
+        await fotoHochladen(formular);
+      }
+      setBilanz(
+        `${dateien.length === 1 ? 'Foto' : `${dateien.length} Fotos`} gespeichert — ` +
+          `aus ${groesse(vorher)} wurden ${groesse(nachher)}.`,
+      );
+      uebergang(() => {});
+    } catch (e) {
+      setFehler(e instanceof Error ? e.message : 'Das Hochladen hat nicht geklappt.');
+    } finally {
+      setArbeitet(false);
+    }
+  }
+
+  if (!bilder.length && !darfSchreiben) return null;
+
+  return (
+    <div className="verlauf">
+      <div className="verlauf-kopf">
+        <span className="verlauf-titel">Wachstumsverlauf</span>
+        {bilder.length > 0 && (
+          <span className="verlauf-zahl">
+            {bilder.length === 1 ? '1 Foto' : `${bilder.length} Fotos`}
+            {bilder.some((f) => !f.aufgenommenAm) && ' · manche ohne Datum'}
+          </span>
+        )}
+      </div>
+
+      <div className="streifen">
+        {bilder.map((f, i) => (
+          <figure
+            key={f.id}
+            className={`verlauf-bild${f.aufgenommenAm ? '' : ' undatiert'}`}
+            style={{ animationDelay: `${Math.min(i * 40, 500)}ms` }}
+            onClick={() => setLupe({ foto: f, pflanze: p })}
+            title={f.notiz ?? 'Foto vergrößern'}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/bild/${f.id}${f.hatVorschau ? '?klein' : ''}`}
+              alt={p.name}
+              loading="lazy"
+            />
+            <figcaption>
+              {f.aufgenommenAm
+                ? new Date(f.aufgenommenAm + 'T12:00:00').toLocaleDateString('de-DE', {
+                    day: '2-digit',
+                    month: 'short',
+                  })
+                : 'Datum fehlt'}
+            </figcaption>
+          </figure>
+        ))}
+
+        {darfSchreiben && (
+          <>
+            <button
+              type="button"
+              className="foto-hinzu"
+              disabled={arbeitet}
+              onClick={() => dateiwahl.current?.click()}
+            >
+              <b>+</b>
+              {arbeitet ? 'lädt …' : 'Foto'}
+            </button>
+            <input
+              ref={dateiwahl}
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              onChange={ausgewaehlt}
+            />
+          </>
+        )}
+      </div>
+
+      {!bilder.length && darfSchreiben && (
+        <div className="verlauf-leer">
+          Noch kein Foto. Ab dem zweiten sieht man, wie sie sich macht.
+        </div>
+      )}
+      {bilanz && <div className="verlauf-bilanz">{bilanz}</div>}
+      {fehler && <div className="verlauf-fehler">{fehler}</div>}
     </div>
   );
 }

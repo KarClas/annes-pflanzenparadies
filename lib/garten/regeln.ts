@@ -79,18 +79,54 @@ export type Ernte = {
   notiz: string | null;
 };
 
+/**
+ * Ein Foto — ohne die Bilddaten selbst. Die kommen einzeln über /bild/<id>,
+ * damit nicht bei jedem Seitenaufruf alle Bilder mitgeschleppt werden.
+ */
+export type FotoInfo = {
+  id: number;
+  pflanzeId: string | null;
+  aufgenommenAm: string | null;
+  notiz: string | null;
+  hatVorschau: boolean;
+};
+
 export type Garten = {
   pflanzen: Pflanze[];
   pflege: Record<string, Pflegestand>;
   ernten: Ernte[];
+  fotos: FotoInfo[];
 };
+
+/** Die Fotos einer Pflanze, älteste zuerst — der Wachstumsverlauf. */
+export function fotosVon(pflanzeId: string, fotos: FotoInfo[]) {
+  return fotos
+    .filter((f) => f.pflanzeId === pflanzeId)
+    .sort((a, b) => {
+      // Ohne Aufnahmedatum ans Ende: die Reihenfolge ist dort nicht belegbar.
+      if (!a.aufgenommenAm) return 1;
+      if (!b.aufgenommenAm) return -1;
+      return a.aufgenommenAm.localeCompare(b.aufgenommenAm);
+    });
+}
 
 // ── Zeit ────────────────────────────────────────────────────
 
 export const heute = () => new Date().toISOString().slice(0, 10);
 
+/** Kalendertag ohne Uhrzeit — Grundlage für „wie viele Tage her". */
+const kalendertag = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+
+/**
+ * Wie viele Kalendertage ist das her?
+ *
+ * Bewusst in Kalendertagen, nicht in vollen 24-Stunden-Abschnitten: wer gestern
+ * um 15 Uhr gegossen hat, hat heute um 14 Uhr „gestern" gegossen — nicht „vor
+ * 0 Tagen". So zählen Kopfzeile und Gießplan dasselbe. (Im Artefakt liefen
+ * beide auseinander; Anne hat sich am 3.8.2026 für die Kalendertage entschieden.)
+ */
 export const tageSeit = (iso?: string | null) =>
-  iso ? Math.floor((Date.now() - new Date(iso).getTime()) / 864e5) : null;
+  iso ? Math.floor((kalendertag(new Date()) - kalendertag(new Date(iso))) / 864e5) : null;
 
 export function seitText(iso?: string | null) {
   const t = tageSeit(iso);

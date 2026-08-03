@@ -8,6 +8,20 @@
       "when": 1785766292672,
       "tag": "0000_gruendung",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785787635125,
+      "tag": "0001_fotos",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785787678979,
+      "tag": "0002_foto-vorschau",
+      "breakpoints": true
     }
   ]
 }

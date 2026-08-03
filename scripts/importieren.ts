@@ -14,6 +14,7 @@
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { gt, sql } from 'drizzle-orm';
 import { db } from '../lib/db';
 import {
   pflanzen,
@@ -113,12 +114,39 @@ function erntenVereinen(grund: RohErnte[], browser: RohErnte[], geloescht: Set<n
   return [...nachEid.values()];
 }
 
+/**
+ * Notbremse: Sind seit der Sicherung neue Einträge dazugekommen?
+ *
+ * Das Skript räumt die Tabellen leer. Läuft es versehentlich ein zweites Mal,
+ * wäre alles verloren, was Anne seither eingetragen hat. Deshalb zählt es
+ * vorher nach und bricht ab — wer trotzdem will, hängt `--wirklich` an.
+ */
+async function neueresPruefen(stand: string) {
+  const grenze = new Date(stand);
+  const [{ anzahl }] = await db
+    .select({ anzahl: sql<number>`count(*)::int` })
+    .from(aktivitaeten)
+    .where(gt(aktivitaeten.erfasstAm, grenze));
+
+  if (anzahl > 0 && !process.argv.includes('--wirklich')) {
+    console.error(
+      `\nABGEBROCHEN: In der Datenbank stehen ${anzahl} Pflegeeinträge, die nach der\n` +
+        `Sicherung (${stand}) gemacht wurden. Ein Import würde sie löschen.\n\n` +
+        `Erst eine frische Sicherung nach daten/ legen — oder, wenn der Verlust\n` +
+        `wirklich gewollt ist, mit --wirklich erzwingen.`,
+    );
+    process.exit(1);
+  }
+}
+
 async function main() {
   const stamm = JSON.parse(readFileSync(join(DATEN, 'pflanzen.json'), 'utf8'));
   const { datei, inhalt: sicherung } = neuesteSicherung();
 
   console.log(`Stammdaten : daten/pflanzen.json (Stand ${stamm.aktualisiert})`);
   console.log(`Sicherung  : daten/${datei} (${sicherung.gesichert})\n`);
+
+  await neueresPruefen(sicherung.gesichert);
 
   const grundstock = stamm.grundstock ?? {};
   const browserDaten = sicherung.daten ?? {};

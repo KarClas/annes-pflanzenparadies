@@ -1,6 +1,6 @@
 import { sql, eq, desc, asc } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { pflanzen, aktivitaeten, basisPflege, ernten, einstellungen } from '@/lib/db/schema';
+import { pflanzen, aktivitaeten, basisPflege, ernten, einstellungen, fotos } from '@/lib/db/schema';
 import type { Darstellung } from '@/lib/db/schema';
 import type { Garten, Pflanze, Pflegestand } from './regeln';
 
@@ -48,7 +48,8 @@ export type StandortInfo = { balkon?: string; besonderheiten?: string };
 export async function gartenLaden(): Promise<
   Garten & { thema: string; standort: StandortInfo }
 > {
-  const [reihen, pflegeReihen, sockelReihen, ernteReihen, einstellungReihen] = await Promise.all([
+  const [reihen, pflegeReihen, sockelReihen, ernteReihen, einstellungReihen, fotoReihen] =
+    await Promise.all([
     db.select().from(pflanzen).where(eq(pflanzen.aktiv, true)).orderBy(asc(pflanzen.name)),
     db
       .select({
@@ -62,6 +63,17 @@ export async function gartenLaden(): Promise<
     db.select().from(basisPflege),
     db.select().from(ernten).orderBy(desc(ernten.datum), desc(ernten.id)),
     db.select().from(einstellungen),
+    // Ohne `daten` und `vorschau` — die Bilder kommen einzeln über /bild/<id>.
+    db
+      .select({
+        id: fotos.id,
+        pflanzeId: fotos.pflanzeId,
+        aufgenommenAm: fotos.aufgenommenAm,
+        notiz: fotos.notiz,
+        hatVorschau: sql<boolean>`${fotos.vorschau} is not null`,
+      })
+      .from(fotos)
+      .orderBy(asc(fotos.aufgenommenAm), asc(fotos.id)),
   ]);
 
   const einstellung = <T,>(schluessel: string, ersatz: T): T =>
@@ -122,6 +134,7 @@ export async function gartenLaden(): Promise<
       menge: e.menge,
       notiz: e.notiz,
     })),
+    fotos: fotoReihen,
     thema: einstellung<string>('thema', 'herbarium'),
     standort: einstellung<StandortInfo>('standort_info', {}),
   };

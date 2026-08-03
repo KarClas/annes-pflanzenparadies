@@ -70,17 +70,19 @@ zu einer Entwicklerin ausbilden zu wollen.
   gehen
 - Lokale Vorschau zum gefahrlosen Ausprobieren
 
+- Gestaltung des Artefakts vollständig übernommen
+- **Fotos** — Wachstumsverlauf pro Pflanze, Hochladen vom Handy mit
+  Verkleinern im Browser
+
 **In Arbeit:**
-- Gestaltung des Artefakts vollständig übernehmen
 - Öffentliche Schauseite + Anmeldung für Anne
 - Live auf Vercel
 
 **Geplant, in dieser Reihenfolge:**
-1. **Fotos vom Handy hochladen** — Wachstumsverlauf pro Pflanze über die Zeit
-2. **Gartentagebuch** — freie Einträge („Blattläuse an der Paprika entdeckt")
-3. **Wachstum reicher** — Blüten die aufgehen, Früchte die reifen und beim
+1. **Gartentagebuch** — freie Einträge („Blattläuse an der Paprika entdeckt")
+2. **Wachstum reicher** — Blüten die aufgehen, Früchte die reifen und beim
    Ernten verschwinden
-4. **Wetter aus Köln** — schlägt vor („morgen Regen — Gießen überspringen?"),
+3. **Wetter aus Köln** — schlägt vor („morgen Regen — Gießen überspringen?"),
    entscheidet aber nicht selbst
 
 **Ausdrücklich nicht gewollt:** Erinnerungen/Benachrichtigungen. Anne hat sich
@@ -160,7 +162,12 @@ die Anmeldung prüfen**, nicht nur die Knöpfe in der Oberfläche ausblenden.
 | `lib/garten/` | Zeichenlogik und Pflanzenregeln aus dem Artefakt |
 | `daten/` | Ursprungsdaten, Sicherungen, das Original-Artefakt |
 | `wissen/` | Annes Nachschlagewerke — Pflanzenwissen, Saisonkalender, Pilzzucht |
-| `public/fotos/` | Pflanzenfotos |
+| `public/fotos/` | Bilddateien aus der Artefakt-Zeit (Archiv) — die App liest sie nicht mehr |
+
+Fotos liegen als Bytes in der Datenbank und werden über `/bild/<id>`
+ausgeliefert (`?klein` für die Vorschau). Verkleinert wird im Browser vor dem
+Hochladen; der Server prüft anhand der ersten Bytes, ob wirklich ein Bild
+ankommt, statt der Angabe des Browsers zu glauben.
 
 ### Befehle
 

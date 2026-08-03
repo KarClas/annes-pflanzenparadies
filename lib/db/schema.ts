@@ -9,7 +9,13 @@ import {
   timestamp,
   jsonb,
   index,
+  customType,
 } from 'drizzle-orm/pg-core';
+
+/** Rohe Bytes — Postgres' `bytea`. Drizzle bringt dafür keinen fertigen Typ mit. */
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType: () => 'bytea',
+});
 
 /**
  * Die Stammdaten einer Pflanze — was sie ist und was sie braucht.
@@ -146,6 +152,37 @@ export const ernten = pgTable(
   (t) => [index('ernten_datum_idx').on(t.datum)],
 );
 
+/**
+ * Pflanzenfotos — der Wachstumsverlauf über die Zeit.
+ *
+ * Die Bilder liegen als Bytes in der Datenbank, nicht in einem eigenen
+ * Bilderspeicher. Für einen Balkon mit ein paar hundert Fotos ist das
+ * unproblematisch und erspart einen weiteren Dienst: eine Sicherung der
+ * Datenbank enthält damit auch alle Bilder.
+ *
+ * Verkleinert wird schon im Browser, bevor etwas hochgeladen wird — aus einem
+ * 4-MB-Handyfoto werden rund 300 KB.
+ */
+export const fotos = pgTable(
+  'fotos',
+  {
+    id: serial('id').primaryKey(),
+    /** Ohne Pflanze: ein Foto zum Gartentagebuch. */
+    pflanzeId: text('pflanze_id').references(() => pflanzen.id, { onDelete: 'cascade' }),
+    daten: bytea('daten').notNull(),
+    /** Kleine Fassung für Listen — sonst lädt jede Zeile ein volles Foto. */
+    vorschau: bytea('vorschau'),
+    typ: text('typ').notNull().default('image/jpeg'),
+    breite: integer('breite'),
+    hoehe: integer('hoehe'),
+    /** Wann das Bild entstanden ist. Bei Altbeständen nicht immer bekannt. */
+    aufgenommenAm: date('aufgenommen_am'),
+    notiz: text('notiz'),
+    hochgeladenAm: timestamp('hochgeladen_am', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('fotos_pflanze_idx').on(t.pflanzeId, t.aufgenommenAm)],
+);
+
 /** Kleinkram: gewähltes Thema und Ähnliches. */
 export const einstellungen = pgTable('einstellungen', {
   schluessel: text('schluessel').primaryKey(),
@@ -153,6 +190,7 @@ export const einstellungen = pgTable('einstellungen', {
   geaendertAm: timestamp('geaendert_am', { withTimezone: true }).notNull().defaultNow(),
 });
 
+export type Foto = typeof fotos.$inferSelect;
 export type Pflanze = typeof pflanzen.$inferSelect;
 export type NeuePflanze = typeof pflanzen.$inferInsert;
 export type Aktivitaet = typeof aktivitaeten.$inferSelect;

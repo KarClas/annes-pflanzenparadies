@@ -10,7 +10,8 @@
     "db:erzeugen": "drizzle-kit generate",
     "db:anwenden": "drizzle-kit migrate",
     "db:ansehen": "drizzle-kit studio",
-    "daten:import": "tsx --env-file=.env.local scripts/importieren.ts"
+    "daten:import": "tsx --env-file=.env.local scripts/importieren.ts",
+    "fotos:import": "tsx --env-file=.env.local scripts/fotos-importieren.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
