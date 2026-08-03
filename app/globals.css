@@ -1,49 +1,476 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ═══════════════════════════════════════════════════════════
+   Annes Garten — Gestaltung
+
+   Wörtlich aus dem Artefakt übernommen (daten/dashboard-original.html,
+   Zeilen 4–460). Einzige Änderung: die drei Schriftfamilien werden nicht
+   mehr als Name angesprochen ('Fraunces'), sondern über die Variablen, die
+   Next.js beim Mitliefern der Schriften setzt (var(--fraunces)).
+   ═══════════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+/* Beim Überscrollen (Gummiband-Effekt am Rand) schaut sonst weißes Papier
+   hinter dem Garten hervor. Die Themenfarben liegen auf #garten und sind für
+   den Seitenhintergrund nicht sichtbar — deshalb hier noch einmal grob. */
+body:has(#garten[data-thema="herbarium"])  { background: #F2EDE0; }
+body:has(#garten[data-thema="nacht"])      { background: #10190F; }
+body:has(#garten[data-thema="jugendstil"]) { background: #0F2620; }
+
+/* ═══════════════════════════════════════════════════════════
+   THEMEN
+   ═══════════════════════════════════════════════════════════ */
+
+#garten[data-thema="herbarium"] {
+  --grund:        #F2EDE0;
+  --grund-tief:   #E7DFCC;
+  --karte:        #FBF8F0;
+  --tinte:        #1F3324;
+  --tinte-weich:  #55684F;
+  --gruen:        #4A6B3D;
+  --gruen-hell:   #7D9B66;
+  --akzent:       #A8552F;
+  --akzent-weich: #CE8A62;
+  --gold:         #B8912F;
+  --linie:        #D2C7AC;
+  --ranke:        #93A87C;
+  --ranke-op:     0.55;
+  --korn:         0.30;
+  --font-display: var(--fraunces), Georgia, serif;
+  --display-wonk: 'SOFT' 45, 'WONK' 1;
+  --radius:       10px;
+  --schein:       none;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+#garten[data-thema="nacht"] {
+  --grund:        #10190F;
+  --grund-tief:   #162214;
+  --karte:        #1A2818;
+  --tinte:        #E4EDDC;
+  --tinte-weich:  #93A889;
+  --gruen:        #8FBF72;
+  --gruen-hell:   #B4D89B;
+  --akzent:       #E0A063;
+  --akzent-weich: #C4834A;
+  --gold:         #D8B860;
+  --linie:        #2C4028;
+  --ranke:        #3E5C36;
+  --ranke-op:     0.95;
+  --korn:         0.16;
+  --font-display: var(--fraunces), Georgia, serif;
+  --display-wonk: 'SOFT' 20, 'WONK' 0;
+  --radius:       12px;
+  --schein:       0 0 24px rgba(143,191,114,.10);
 }
 
-html {
-  height: 100%;
+#garten[data-thema="jugendstil"] {
+  --grund:        #0F2620;
+  --grund-tief:   #143029;
+  --karte:        #17362E;
+  --tinte:        #F0E6D2;
+  --tinte-weich:  #A9BCAB;
+  --gruen:        #7FB79A;
+  --gruen-hell:   #A8D4BB;
+  --akzent:       #C9A227;
+  --akzent-weich: #E0C15E;
+  --gold:         #D9BC63;
+  --linie:        #2B4C42;
+  --ranke:        #C9A227;
+  --ranke-op:     0.40;
+  --korn:         0.12;
+  --font-display: var(--cormorant), Georgia, serif;
+  --display-wonk: normal;
+  --radius:       3px;
+  --schein:       0 0 0 1px rgba(201,162,39,.14);
 }
 
-html,
-body {
-  max-width: 100vw;
+/* ═══════════════════════════════════════════════════════════
+   GRUNDGERÜST
+   ═══════════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+#garten {
+  font-family: var(--karla), system-ui, sans-serif;
+  color: var(--tinte);
+  background: var(--grund);
+  min-height: 100vh;
+  position: relative;
   overflow-x: hidden;
+  transition: background .5s ease, color .5s ease;
+  padding-bottom: 90px;
 }
 
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+#garten::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 45% at 12% 8%,  color-mix(in srgb, var(--gruen) 16%, transparent), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 90% 78%, color-mix(in srgb, var(--akzent) 13%, transparent), transparent 70%);
+  transition: opacity .5s;
+}
+#garten::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 2; opacity: var(--korn);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+
+
+/* ── Sicherung ────────────────────────────────────────────── */
+.sichern-knopf {
+  width: 21px; height: 21px; border-radius: 50%; cursor: pointer; border: 1.5px solid var(--linie);
+  background: transparent; color: var(--tinte-weich); display: flex; align-items: center;
+  justify-content: center; font-size: 12px; line-height: 1; transition: all .18s; padding: 0;
+  font-family: var(--karla), sans-serif;
+}
+.sichern-knopf:hover { border-color: var(--gold); color: var(--gold); transform: scale(1.12); }
+
+.sicherung {
+  position: fixed; top: 52px; right: 20px; z-index: 21; width: min(420px, calc(100vw - 40px));
+  background: var(--karte); border: 1px solid var(--linie); border-radius: var(--radius);
+  box-shadow: 0 16px 44px rgba(0,0,0,.22); padding: 18px 20px 20px;
+  animation: auf .22s cubic-bezier(.2,.9,.3,1);
+}
+.sicherung[hidden] { display: none; }
+.sicherung h3 { font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+                font-size: 17px; font-weight: 500; margin-bottom: 6px; }
+.sicherung p { font-size: 11.5px; color: var(--tinte-weich); line-height: 1.65; margin-bottom: 12px; }
+.sicherung textarea {
+  width: 100%; height: 96px; font-family: ui-monospace, monospace; font-size: 10.5px;
+  color: var(--tinte); background: var(--grund); border: 1px solid var(--linie);
+  border-radius: var(--radius); padding: 9px 11px; resize: vertical; line-height: 1.5;
+}
+.sicherung textarea:focus { outline: none; border-color: var(--gruen); }
+.sicherung-knoepfe { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 11px; align-items: center; }
+.sicherung .knopf.zweit { background: transparent; color: var(--tinte-weich); border-color: var(--linie); }
+.sicherung .knopf.zweit:hover { color: var(--gold); border-color: var(--gold); background: transparent; }
+.sicherung-status { font-size: 11px; color: var(--gruen); font-style: italic; }
+
+/* ── Beet: alle Pflanzen als wachsende Porträts ───────────── */
+.beet-huelle { padding: 0 40px 6px; }
+.beet {
+  border: 1px solid var(--linie); border-radius: var(--radius);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--karte) 90%, transparent),
+    color-mix(in srgb, var(--grund-tief) 78%, transparent));
+  box-shadow: var(--schein); padding: 16px 0 0; position: relative; overflow: hidden;
+}
+.beet-kopf { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+             padding: 0 20px 11px; border-bottom: 1px solid var(--linie); }
+.beet-titel { font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+              font-size: 16px; font-weight: 500; }
+.beet-zahl { font-size: 10px; text-transform: uppercase; letter-spacing: .15em; color: var(--tinte-weich); }
+.beet-hinweis { margin-left: auto; font-size: 10.5px; color: var(--tinte-weich); font-style: italic; }
+
+.brett {
+  display: flex; gap: 4px; align-items: flex-end; overflow-x: auto; overflow-y: hidden;
+  padding: 14px 20px 8px; scrollbar-width: thin;
+  scrollbar-color: var(--linie) transparent;
+}
+.brett::-webkit-scrollbar { height: 6px; }
+.brett::-webkit-scrollbar-thumb { background: var(--linie); border-radius: 6px; }
+.brett::-webkit-scrollbar-track { background: transparent; }
+
+.topf { flex-shrink: 0; width: 74px; text-align: center; cursor: default;
+        animation: aufgehen .6s cubic-bezier(.22,1.1,.36,1) backwards; }
+.topf svg { width: 74px; height: 112px; display: block; overflow: visible; }
+.topf-name { font-size: 8.5px; text-transform: uppercase; letter-spacing: .07em;
+             color: var(--tinte-weich); margin-top: 3px; line-height: 1.25;
+             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topf:hover .topf-name { color: var(--tinte); }
+@keyframes aufgehen { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+.erdlinie { height: 3px; margin: 0 20px 16px;
+            background: linear-gradient(90deg, transparent, var(--linie) 8%, var(--linie) 92%, transparent);
+            border-radius: 3px; }
+
+/* wachsende Teile blenden sanft ein */
+.wuchs { transition: opacity .8s ease, transform .8s cubic-bezier(.2,1.25,.4,1);
+         transform-box: fill-box; transform-origin: 50% 100%; }
+.wuchs.zu { opacity: 0; transform: scale(.35); }
+
+/* Mini-Porträt in der Pflanzenliste */
+.mini { width: 34px; height: 50px; flex-shrink: 0; }
+.mini svg { width: 34px; height: 50px; display: block; overflow: visible; }
+
+@media (max-width: 720px) { .beet-huelle, .vitrine-huelle { padding-left: 14px; padding-right: 14px; } }
+
+/* ── Ernte-Vitrine ────────────────────────────────────────── */
+.vitrine-huelle { padding: 0 40px 6px; }
+.vitrine {
+  border: 1px solid var(--linie); border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--karte) 92%, transparent), color-mix(in srgb, var(--grund-tief) 70%, transparent));
+  box-shadow: var(--schein);
+  padding: 16px 20px 18px; position: relative; overflow: hidden;
+}
+.vitrine::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(112deg, transparent 42%, color-mix(in srgb, var(--tinte) 4%, transparent) 50%, transparent 58%);
+}
+.vitrine-kopf {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 13px; padding-bottom: 9px; border-bottom: 1px solid var(--linie);
+}
+.vitrine-titel {
+  font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+  font-size: 16px; font-weight: 500; letter-spacing: .01em;
+}
+.vitrine-zahl { font-size: 10px; text-transform: uppercase; letter-spacing: .15em; color: var(--tinte-weich); }
+.vitrine-wachstum { margin-left: auto; font-size: 10.5px; color: var(--tinte-weich); font-style: italic; }
+
+.regal { display: flex; flex-wrap: wrap; gap: 3px 2px; align-items: flex-end; min-height: 40px; }
+.frucht {
+  width: 32px; height: 32px; flex-shrink: 0; cursor: default;
+  animation: keimen .5s cubic-bezier(.22,1.2,.36,1) backwards;
+  transition: transform .2s;
+}
+.frucht:hover { transform: translateY(-4px) scale(1.14); }
+.frucht svg { width: 100%; height: 100%; display: block; }
+@keyframes keimen {
+  from { opacity: 0; transform: translateY(9px) scale(.5) rotate(-14deg); }
+  to   { opacity: 1; transform: none; }
+}
+.mehr {
+  align-self: center; font-size: 11px; color: var(--tinte-weich);
+  padding: 4px 10px; border: 1px dashed var(--linie); border-radius: 100px; margin-left: 6px;
+}
+.vitrine-leer { font-size: 13px; color: var(--tinte-weich); font-style: italic; padding: 6px 0 4px; }
+
+/* ── Ranken ───────────────────────────────────────────────── */
+.ranke {
+  position: fixed; top: 0; height: 100vh; width: 132px; overflow: hidden;
+  pointer-events: none; z-index: 1;
+  color: var(--ranke); opacity: var(--ranke-op);
+  transition: color .5s, opacity .5s;
+}
+.ranke svg { position: absolute; bottom: 0; left: 0; width: 132px; height: 100%; display: block; }
+.ranke .stiel { transition: stroke-dashoffset 2.4s cubic-bezier(.25,.8,.3,1); }
+.ranke .blatt { transition: opacity .9s ease, transform .9s cubic-bezier(.2,1.3,.4,1); transform-box: fill-box; transform-origin: 0 50%; }
+.ranke .blatt.zu { opacity: 0; transform: scale(.2); }
+.ranke .spitze { transition: opacity .6s; animation: kringeln 6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+@keyframes kringeln { 0%,100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+.ranke.links  { left: 0;  animation: wehen 15s ease-in-out infinite; }
+.ranke.rechts { right: 0; animation: wehen-r 18s ease-in-out infinite; }
+@keyframes wehen   { 0%,100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+@keyframes wehen-r { 0%,100% { transform: scaleX(-1) translateX(0); } 50% { transform: scaleX(-1) translateX(6px); } }
+
+#garten > .huelle { position: relative; z-index: 3; }
+
+/* ── Kopf ─────────────────────────────────────────────────── */
+.kopf {
+  padding: 52px 40px 30px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 26px; flex-wrap: wrap;
+}
+.kopf h1 {
+  font-family: var(--font-display);
+  font-variation-settings: var(--display-wonk);
+  font-weight: 500; font-size: clamp(32px, 5.5vw, 54px);
+  letter-spacing: -.022em; line-height: .98;
+}
+#garten[data-thema="jugendstil"] .kopf h1 { font-weight: 300; letter-spacing: .015em; }
+.kopf h1 em { font-family: var(--karla), sans-serif; font-style: normal; font-weight: 400;
+              font-size: .74em; color: var(--gruen); padding: 0 .06em; }
+.untertitel { font-size: 12.5px; color: var(--tinte-weich); margin-top: 12px; letter-spacing: .045em; max-width: 46ch; line-height: 1.55; }
+
+.zierlinie { display: flex; align-items: center; gap: 9px; margin-top: 14px; }
+.zierlinie i { display: block; height: 1px; width: 62px; background: var(--linie); }
+.zierlinie svg { width: 17px; height: 17px; color: var(--gruen); }
+
+.zahlen { display: flex; gap: 32px; }
+.zahl { text-align: right; }
+.zahl b {
+  display: block; font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+  font-size: 33px; font-weight: 500; line-height: 1; color: var(--gruen);
+}
+.zahl.warn b { color: var(--akzent); }
+.zahl span { font-size: 9.5px; text-transform: uppercase; letter-spacing: .16em; color: var(--tinte-weich); }
+
+/* ── Themenwähler ─────────────────────────────────────────── */
+.themen { position: fixed; top: 18px; right: 20px; z-index: 20; display: flex; gap: 7px;
+          padding: 7px 9px; border-radius: 100px;
+          background: color-mix(in srgb, var(--karte) 88%, transparent);
+          border: 1px solid var(--linie); backdrop-filter: blur(8px); }
+.tupfen { width: 21px; height: 21px; border-radius: 50%; cursor: pointer; border: 1.5px solid transparent;
+          transition: transform .2s, border-color .2s; }
+.tupfen:hover { transform: scale(1.16); }
+.tupfen.aktiv { border-color: var(--gold); }
+.tupfen[data-t="herbarium"]  { background: linear-gradient(135deg, #F2EDE0 50%, #4A6B3D 50%); }
+.tupfen[data-t="nacht"]      { background: linear-gradient(135deg, #10190F 50%, #8FBF72 50%); }
+.tupfen[data-t="jugendstil"] { background: linear-gradient(135deg, #0F2620 50%, #C9A227 50%); }
+
+/* ── Reiter ───────────────────────────────────────────────── */
+.reiter { display: flex; gap: 3px; padding: 0 40px; border-bottom: 1px solid var(--linie); flex-wrap: wrap; }
+.reiter button {
+  font-family: var(--karla), sans-serif; font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .14em;
+  padding: 15px 20px; border: none; background: none; cursor: pointer;
+  color: var(--tinte-weich); border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color .2s, border-color .2s;
+}
+.reiter button:hover { color: var(--tinte); }
+.reiter button.aktiv { color: var(--tinte); border-bottom-color: var(--akzent); }
+
+.inhalt { padding: 32px 40px 0; max-width: 1120px; }
+
+/* ── Filterchips ──────────────────────────────────────────── */
+.filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
+.chip {
+  font-family: var(--karla), sans-serif; font-size: 10.5px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 7px 15px; border-radius: 100px; cursor: pointer;
+  border: 1px solid var(--linie); background: transparent; color: var(--tinte-weich);
+  transition: all .2s;
+}
+.chip:hover { border-color: var(--gruen); color: var(--tinte); }
+.chip.aktiv { background: var(--gruen); border-color: var(--gruen); color: var(--grund); }
+
+/* ── Pflanzenzeile ────────────────────────────────────────── */
+.zeile {
+  display: grid; grid-template-columns: 34px 1fr auto; gap: 16px; align-items: center;
+  padding: 16px 18px 16px 0; border-bottom: 1px solid var(--linie);
+  cursor: pointer; transition: background .2s, padding-left .2s;
+}
+.zeile:hover { background: color-mix(in srgb, var(--karte) 70%, transparent); padding-left: 8px; }
+.balken { width: 5px; height: 36px; border-radius: 5px; background: var(--gruen); transition: background .25s; }
+.balken.faellig { background: var(--akzent); }
+.balken.bald    { background: var(--gold); }
+
+.titelzeile { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.pname { font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+         font-size: 20px; font-weight: 500; letter-spacing: -.012em; }
+.marke { font-size: 10px; color: var(--tinte-weich); border: 1px solid var(--linie);
+         padding: 2px 8px; border-radius: 100px; letter-spacing: .07em; text-transform: uppercase; }
+.meta { font-size: 12.5px; color: var(--tinte-weich); margin-top: 5px; }
+.meta .rot { color: var(--akzent); font-weight: 700; }
+
+.aktionen { display: flex; gap: 7px; }
+.tat {
+  font-family: var(--karla), sans-serif; font-size: 9.5px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 9px 14px; border-radius: var(--radius); cursor: pointer; white-space: nowrap;
+  border: 1px solid var(--linie); background: transparent; color: var(--tinte-weich);
+  transition: all .17s;
+}
+.tat:hover  { border-color: var(--gruen); color: var(--gruen); transform: translateY(-1px); }
+.tat.d:hover{ border-color: var(--akzent); color: var(--akzent); }
+.tat:active { transform: scale(.96); }
+
+/* ── Foto in der Pflanzenliste ────────────────────────────── */
+.foto {
+  width: 58px; height: 58px; flex-shrink: 0; border-radius: var(--radius);
+  overflow: hidden; border: 1px solid var(--linie); cursor: zoom-in;
+  background: var(--karte); transition: transform .2s, border-color .2s;
+}
+.foto:hover { transform: scale(1.07); border-color: var(--gruen); }
+.foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto-leer {
+  width: 58px; height: 58px; flex-shrink: 0; border-radius: var(--radius);
+  border: 1px dashed var(--linie); opacity: .4;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.lupe {
+  position: fixed; inset: 0; z-index: 60; display: flex;
+  align-items: center; justify-content: center; padding: 28px;
+  background: color-mix(in srgb, var(--grund) 88%, transparent);
+  backdrop-filter: blur(10px); cursor: zoom-out;
+  animation: auf .22s ease;
 }
+.lupe[hidden] { display: none; }
+.lupe figure { max-width: min(720px, 92vw); text-align: center; }
+.lupe img {
+  max-width: 100%; max-height: 78vh; border-radius: var(--radius);
+  box-shadow: 0 22px 60px rgba(0,0,0,.32); display: block;
+}
+.lupe figcaption {
+  margin-top: 14px; font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+  font-size: 19px; color: var(--tinte);
+}
+.lupe small { display: block; margin-top: 5px; font-family: var(--karla), sans-serif;
+              font-size: 11px; letter-spacing: .13em; text-transform: uppercase; color: var(--tinte-weich); }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* ── Detail ───────────────────────────────────────────────── */
+.detail {
+  padding: 14px 0 22px 26px; margin: 0 0 6px 2px;
+  border-left: 2px solid var(--linie); animation: auf .28s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes auf { from { opacity:0; transform: translateY(-6px);} to {opacity:1; transform:none;} }
+.dz { display: flex; gap: 14px; font-size: 13px; padding: 5px 0; line-height: 1.55; }
+.dz dt { min-width: 84px; font-size: 9.5px; text-transform: uppercase; letter-spacing: .13em;
+         color: var(--tinte-weich); padding-top: 3px; flex-shrink: 0; }
+.notiz { font-style: italic; color: var(--tinte-weich); }
+
+/* ── Pläne ────────────────────────────────────────────────── */
+.gruppe { margin-bottom: 34px; }
+.gruppe-kopf { display: flex; align-items: baseline; gap: 13px; padding-bottom: 10px;
+               margin-bottom: 3px; border-bottom: 2px solid var(--linie); flex-wrap: wrap; }
+.gruppe-datum { font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+                font-size: 23px; font-weight: 500; letter-spacing: -.012em; }
+.gruppe-rel { font-size: 10px; text-transform: uppercase; letter-spacing: .15em; color: var(--tinte-weich); }
+.gruppe.ueberfaellig .gruppe-datum { color: var(--akzent); }
+.gruppe.ueberfaellig .gruppe-kopf  { border-bottom-color: var(--akzent-weich); }
+.gruppe.heute .gruppe-datum { color: var(--gold); }
+.gruppe.heute .gruppe-kopf  { border-bottom-color: var(--gold); }
+
+.plan-zeile { display: flex; align-items: center; gap: 15px; padding: 13px 6px;
+              border-bottom: 1px solid var(--linie); transition: background .18s; }
+.plan-zeile:hover { background: color-mix(in srgb, var(--karte) 60%, transparent); }
+.haken { width: 22px; height: 22px; flex-shrink: 0; cursor: pointer;
+         border: 1.5px solid var(--linie); border-radius: 6px; background: transparent;
+         display: flex; align-items: center; justify-content: center;
+         font-size: 13px; color: transparent; transition: all .17s; }
+.haken:hover { border-color: var(--gruen); color: var(--gruen); background: color-mix(in srgb, var(--gruen) 12%, transparent); }
+.plan-name { font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+             font-size: 18px; font-weight: 500; }
+.plan-info { font-size: 11.5px; color: var(--tinte-weich); margin-left: auto; text-align: right; line-height: 1.6; }
+.plan-info b { color: var(--gruen); font-weight: 600; }
+
+/* ── Formulare ────────────────────────────────────────────── */
+.sammelaktion, .formular {
+  display: flex; gap: 11px; flex-wrap: wrap; align-items: flex-end;
+  padding: 19px 22px; margin-bottom: 30px;
+  background: color-mix(in srgb, var(--karte) 80%, transparent);
+  border: 1px solid var(--linie); border-radius: var(--radius); box-shadow: var(--schein);
+}
+.sammelaktion p { font-size: 12px; color: var(--tinte-weich); flex-basis: 100%; line-height: 1.55; }
+.sammel-info { font-size: 11.5px; color: var(--gruen); font-style: italic; align-self: center; }
+.feld { display: flex; flex-direction: column; gap: 6px; }
+.feld label { font-size: 9.5px; text-transform: uppercase; letter-spacing: .13em; color: var(--tinte-weich); }
+.feld input, .feld select {
+  font-family: var(--karla), sans-serif; font-size: 13px; color: var(--tinte);
+  padding: 9px 12px; border: 1px solid var(--linie); border-radius: var(--radius);
+  background: var(--grund); min-width: 132px;
+}
+.feld input:focus, .feld select:focus { outline: none; border-color: var(--gruen); }
+.knopf {
+  font-family: var(--karla), sans-serif; font-size: 10.5px; font-weight: 700;
+  letter-spacing: .13em; text-transform: uppercase;
+  padding: 11px 21px; border-radius: var(--radius); cursor: pointer;
+  background: var(--gruen); color: var(--grund); border: 1px solid var(--gruen);
+  transition: all .17s;
+}
+.knopf:hover { background: var(--gruen-hell); border-color: var(--gruen-hell); transform: translateY(-1px); }
+
+/* ── Ernte ────────────────────────────────────────────────── */
+.ernte-zeile { display: flex; align-items: baseline; gap: 15px; padding: 14px 0; border-bottom: 1px solid var(--linie); flex-wrap: wrap; }
+.ernte-datum { font-family: var(--font-display); font-variation-settings: var(--display-wonk);
+               font-size: 13.5px; color: var(--akzent); min-width: 96px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.ernte-was { font-size: 15.5px; font-weight: 500; }
+.ernte-menge { font-size: 13px; color: var(--gruen); font-weight: 700; }
+.ernte-notiz { font-size: 13px; color: var(--tinte-weich); font-style: italic; }
+.weg { margin-left: auto; background: none; border: none; cursor: pointer; color: var(--linie); font-size: 17px; padding: 0 6px; }
+.weg:hover { color: var(--akzent); }
+
+.leer { padding: 56px 0; text-align: center; color: var(--tinte-weich); font-style: italic; font-size: 14.5px; }
+.laden { padding: 80px 0; text-align: center; color: var(--tinte-weich); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
+.fussnote { margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--linie);
+            font-size: 11.5px; color: var(--tinte-weich); line-height: 1.75; max-width: 66ch; }
+
+@media (max-width: 900px) { .ranke { display: none; } }
+@media (max-width: 720px) {
+  .kopf, .reiter, .inhalt { padding-left: 20px; padding-right: 20px; }
+  .kopf { padding-top: 66px; }
+  .zeile { grid-template-columns: 34px 1fr auto; }
+  .plan-info { margin-left: 0; flex-basis: 100%; text-align: left; }
 }

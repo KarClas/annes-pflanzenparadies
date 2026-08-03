@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Annes Ursprungsdateien: Skripte und das Original-Artefakt aus der
+    // Artefakt-Zeit. Sie sind Archiv, nicht Teil der Anwendung, und sollen
+    // unverändert bleiben.
+    "daten/**",
   ]),
 ]);
 
