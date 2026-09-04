@@ -144,8 +144,17 @@ Zustand — sie wandert weitgehend unverändert aus dem Artefakt in eigene Modul
 
 ## Technik in Kurzform
 
-Next.js (App Router) · PostgreSQL mit Drizzle · Auth.js mit GitHub-Anmeldung ·
-Vercel. Lokal läuft eine eigene Postgres-Datenbank, getrennt von der echten.
+**Die begründeten Entscheidungen stehen in `STACK.md`** — dort auch, wo die
+Ausgänge liegen, falls später etwas gewechselt werden soll.
+
+Next.js (App Router) · PostgreSQL mit Drizzle · Auth.js mit Passwort ·
+Betrieb zunächst auf Vercel, aber durch `output: 'standalone'` nicht daran
+gebunden. Lokal läuft eine eigene Postgres-Datenbank, getrennt von der echten.
+
+**Kein Anbieter-Sonderweg.** Der Datenbanktreiber ist der neutrale
+(`postgres.js`), die Fotos liegen in der Datenbank statt bei einem
+Bilderdienst, `next/image` wird nicht benutzt. Das ist Absicht und soll so
+bleiben — Anne will nicht an einen Hoster gebunden sein.
 
 > Next.js 16 ist neuer als der Trainingsstand. Vor dem Schreiben von App-Code
 > die Anleitung unter `node_modules/next/dist/docs/` lesen — siehe `AGENTS.md`.

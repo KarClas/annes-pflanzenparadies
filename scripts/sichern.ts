@@ -21,6 +21,47 @@ import { asc, desc, sql } from 'drizzle-orm';
 import { db } from '../lib/db';
 import { aktivitaeten, basisPflege, ernten, einstellungen, fotos } from '../lib/db/schema';
 
+/** Die Freistufe von Neon. Andere Anbieter haben andere Grenzen. */
+const FREISTUFE_BYTES = 0.5 * 1024 ** 3;
+
+/**
+ * Wie voll ist es? Fotos sind das Einzige, was nennenswert wächst — die
+ * Anzeige soll einen Engpass Jahre vorher sichtbar machen, statt ihn
+ * eines Tages als Fehlermeldung zu liefern.
+ */
+async function platzAnzeigen() {
+  const [z] = await db.execute<{
+    gesamt: number;
+    fotos: number;
+    anzahl: number;
+    schnitt: number | null;
+  }>(sql`
+    select pg_database_size(current_database())::bigint as gesamt,
+           pg_total_relation_size('fotos')::bigint      as fotos,
+           (select count(*)::int from fotos)            as anzahl,
+           (select round(avg(octet_length(daten) + coalesce(octet_length(vorschau), 0)))::int
+              from fotos)                               as schnitt`);
+
+  const mb = (b: number) => (b / 1024 ** 2).toFixed(1).replace('.', ',') + ' MB';
+  const prozent = (Number(z.gesamt) / FREISTUFE_BYTES) * 100;
+  const anteil = prozent.toFixed(1).replace('.', ',');
+
+  console.log();
+  console.log('Platz:');
+  console.log(`  Datenbank gesamt      : ${mb(Number(z.gesamt))} von 512 MB (${anteil} %)`);
+  console.log(`  davon Fotos           : ${mb(Number(z.fotos))}`);
+
+  if (z.schnitt) {
+    const frei = FREISTUFE_BYTES - Number(z.gesamt);
+    const passen = Math.floor(frei / Number(z.schnitt));
+    console.log(`  Schnitt je Foto       : ${Math.round(Number(z.schnitt) / 1024)} KB`);
+    console.log(`  Es passen noch ca.    : ${passen.toLocaleString('de-DE')} Fotos`);
+    if (prozent >= 80) {
+      console.log('  ACHTUNG: Es wird eng — Zeit für einen Dateispeicher.');
+    }
+  }
+}
+
 async function main() {
   const [pflegeReihen, sockelReihen, ernteReihen, einstellungReihen, fotoAnzahl] =
     await Promise.all([
@@ -112,6 +153,8 @@ async function main() {
   console.log(`  Ernten                : ${ernteReihen.length}`);
   console.log(`  gelöschte Ernten      : ${geloescht.length}`);
   console.log(`  Fotos                 : ${fotoAnzahl[0].n} (nicht in dieser Datei)`);
+
+  await platzAnzeigen();
 }
 
 main().then(
