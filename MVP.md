@@ -7,9 +7,12 @@ vom 3. August und 4. September.
 
 ## Das Ziel in einem Satz
 
-**Anne pflegt ihren Garten vom Handy aus — überall, nicht nur zu Hause.**
+**Die Anwendung ist vollständig, lokal geprüft und bereit zum Livegang —
+sobald Anne entscheidet, wo sie laufen soll.**
 
-Alles andere ist Zugabe und kommt später.
+Der Livegang selbst gehört bewusst **nicht** dazu. Erst wird fertiggebaut und
+auf dem eigenen Rechner geprüft; die Wahl des Hosters bleibt offen und wird
+durch nichts vorweggenommen.
 
 ---
 
@@ -38,12 +41,12 @@ Diese Sätze müssen am Ende alle stimmen — nachprüfbar, nicht gefühlt:
    Wachstumsverlauf, richtig herum gedreht.
 5. Wer nicht angemeldet ist, sieht **nichts** vom Garten — weder Seiten noch
    Fotos, und auch nichts an der Oberfläche vorbei.
-6. Die Seite ist von überall erreichbar, nicht nur im heimischen WLAN.
-7. Auf dem Handy liegt ein Symbol, das die Seite im Vollbild öffnet.
-8. Die Rechenregeln für Wuchsstufen und Fälligkeiten sind durch Tests
+6. Die Rechenregeln für Wuchsstufen und Fälligkeiten sind durch Tests
    abgesichert.
-9. `npm run dev` startet weiterhin eine lokale Fassung mit eigener Datenbank,
-   getrennt von der echten.
+7. `npm run dev` startet eine lokale Fassung mit eigener Datenbank, getrennt
+   von der späteren echten.
+8. Die Anwendung läuft mit `node server.js`, ohne an einen Anbieter gebunden
+   zu sein.
 
 ---
 
@@ -71,8 +74,7 @@ Diese Sätze müssen am Ende alle stimmen — nachprüfbar, nicht gefühlt:
 | **Passwort-Anmeldung** | Ohne sie kann Anne im Netz nichts eintragen — und ohne Prüfung in den Aktionen könnte es jeder. |
 | **Größere Tippflächen** | Die Häkchen im Gießplan sind 22 × 22 Pixel. Empfohlen sind 44. Genau die tippt sie draußen am häufigsten. |
 | **Tests für die Rechenregeln** | Wuchsstufen, Fälligkeiten und die Zusammenführung beim Import. Daran hängt die ganze Historie. |
-| **Livegang** | Datenbank im Netz, Daten umziehen, Adresse einrichten. |
-| **Symbol für den Startbildschirm** | Damit sich die Seite am Handy wie eine App anfühlt. |
+| **Fotos als WebP** | Rund 21 % kleiner bei gleicher Güte, gemessen an fünf vorhandenen Fotos. *(erledigt)* |
 
 ---
 
@@ -85,7 +87,10 @@ Diese Sätze müssen am Ende alle stimmen — nachprüfbar, nicht gefühlt:
 | **Reicheres Wachstum** | Blüten die aufgehen, Früchte die reifen und beim Ernten verschwinden. Annes Idee, aber Zierde — die Anwendung ist ohne sie vollständig benutzbar. |
 | **Wetter aus Köln** | Braucht eine externe Quelle und eigene Regeln. Danach. |
 | **Erinnerungen** | **Nie.** Anne hat sich ausdrücklich dagegen entschieden. |
-| **Echte Handy-App** | Das Startbildschirm-Symbol reicht. Capacitor bleibt als Weg offen, falls es je gewollt ist. |
+| **Livegang** | Erst wird lokal fertiggebaut. Der Hoster wird danach gewählt — die Optionen bleiben bis dahin offen. |
+| **Symbol für den Startbildschirm** | Ergibt erst Sinn, wenn die Seite eine feste Adresse hat. |
+| **Größere Tippflächen** | Die Häkchen sind 22 statt 44 Pixel. Anne will später darüber reden; bis dahin bleibt es. |
+| **Echte Handy-App** | Capacitor bleibt als Weg offen, falls es je gewollt ist. |
 
 ---
 
@@ -101,10 +106,10 @@ Reiter Ernte → Pflanze wählen, Menge, Notiz → eintragen. Die Notiz ist der
 eigentliche Punkt: „es war meinem Mund eine Ehre" gehört genauso dazu wie die
 Zahl. Danach wächst die Ranke sichtbar weiter.
 
-**3. Nachschlagen unterwegs** — der seltene, aber wichtige Weg
-Im Gartencenter stehen und wissen wollen, welche Erde die Paprika braucht oder
-ob sie schon zwei Basilikum hat. Dafür muss die Anwendung von außerhalb der
-Wohnung erreichbar sein.
+**3. Nachschlagen** — der seltene, aber wichtige Weg
+Wissen wollen, welche Erde die Paprika braucht oder ob sie schon zwei
+Basilikum hat. Nach dem Livegang auch von unterwegs — das ist der Grund,
+warum die Anwendung nicht dauerhaft lokal bleiben soll.
 
 ---
 
@@ -122,9 +127,10 @@ Wohnung erreichbar sein.
 - Bei fehlender Verbindung eine Meldung, die sagt, dass es am Netz liegt.
 
 ### Handy
-- Tippflächen auf den Wegen 1 und 2 mindestens 44 Pixel hoch.
-- Kein seitliches Scrollen. *(geprüft: aktuell erfüllt)*
+- Kein seitliches Scrollen. *(geprüft: erfüllt)*
 - Kamera direkt erreichbar. *(erfüllt)*
+- Tippflächen: die Häkchen im Gießplan sind 22 Pixel, empfohlen wären 44.
+  **Zurückgestellt** — Anne will darüber reden, wenn die Anwendung steht.
 
 ### Abschottung
 - Ohne Anmeldung ist **nichts** erreichbar: keine Seite, keine Fotos, keine
@@ -154,6 +160,7 @@ Wohnung erreichbar sein.
 
 | Frage | Wer entscheidet | Stand |
 |---|---|---|
-| Fotos als WebP statt JPEG? Gleiche Qualität, ein Drittel kleiner. | Anne | offen |
-| Wo gehostet wird | Anne | offen — Empfehlung Vercel zum Start, austauschbar |
-| Sollen die Häkchen größer werden, auch wenn die Liste dadurch länger scrollt? | Anne | offen |
+| Fotos als WebP | Anne | **entschieden am 4.9.2026: ja** |
+| Wo gehostet wird | Anne | offen, bewusst — erst lokal fertigbauen |
+| Häkchen größer, auch wenn die Liste länger scrollt? | Anne | zurückgestellt |
+| WebP mit niedrigerer Güte? Spart 43 statt 21 Prozent, aber sichtbar. | Anne | offen — an zwei Bildern zu entscheiden, nicht an Zahlen |

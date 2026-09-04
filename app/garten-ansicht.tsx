@@ -598,8 +598,11 @@ function Verlauf({
 
         const formular = new FormData();
         formular.set('pflanzeId', p.id);
-        formular.set('bild', gross, 'foto.jpg');
-        formular.set('vorschau', klein, 'vorschau.jpg');
+        // Der Server erkennt das Format an den ersten Bytes; der Name dient
+        // nur der Lesbarkeit im Netzwerkprotokoll.
+        const endung = gross.type === 'image/webp' ? 'webp' : 'jpg';
+        formular.set('bild', gross, `foto.${endung}`);
+        formular.set('vorschau', klein, `vorschau.${endung}`);
         formular.set('breite', String(breite));
         formular.set('hoehe', String(hoehe));
         // Das Änderungsdatum der Datei ist bei Handyfotos der Aufnahmetag.

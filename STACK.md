@@ -60,9 +60,9 @@ Fotos werden im Browser auf 1600 Pixel lange Kante verkleinert.
 
 | | |
 |---|---|
-| Je Foto (groß + Vorschau) | rund 415 KB als JPEG |
+| Je Foto (groß + Vorschau) | rund 330 KB als WebP |
 | Freistufe Neon | 0,5 GB |
-| Reicht für | rund 1.200 Fotos, also etwa 33 je Pflanze |
+| Reicht für | rund 1.500 Fotos, also etwa 40 je Pflanze |
 
 **Offen:** Umstellung auf das Format WebP. Gleiche sichtbare Qualität, rund ein Drittel kleiner — damit rund 1.800 Fotos. Wartet auf Annes Entscheidung, weil es ihre Bildqualität betrifft.
 

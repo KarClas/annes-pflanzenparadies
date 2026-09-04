@@ -33,9 +33,19 @@ async function zeichnen(bild: ImageBitmap, maxKante: number, guete: number) {
   stift.imageSmoothingQuality = 'high';
   stift.drawImage(bild, 0, 0, breite, hoehe);
 
-  const blob = await new Promise<Blob | null>((fertig) =>
-    flaeche.toBlob(fertig, 'image/jpeg', guete),
-  );
+  const umwandeln = (typ: string) =>
+    new Promise<Blob | null>((fertig) => flaeche.toBlob(fertig, typ, guete));
+
+  /**
+   * WebP zuerst: bei gleicher sichtbarer Güte rund ein Drittel kleiner als
+   * JPEG. Kann ein Browser es nicht erzeugen, liefert `toBlob` stillschweigend
+   * PNG zurück — das wäre um ein Vielfaches größer. Deshalb wird der Typ
+   * geprüft und im Zweifel auf JPEG zurückgefallen, statt es zu glauben.
+   */
+  let blob = await umwandeln('image/webp');
+  if (blob?.type !== 'image/webp') {
+    blob = await umwandeln('image/jpeg');
+  }
   if (!blob) throw new Error('Das Bild ließ sich nicht umwandeln.');
   return { blob, breite, hoehe };
 }
