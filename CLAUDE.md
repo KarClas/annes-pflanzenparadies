@@ -69,6 +69,9 @@ machst.
 **Fertig:** Datenbank statt Browser-Speicher · Gestaltung übernommen · Fotos mit
 Wachstumsverlauf und Kamera vom Handy · lokale Vorschau.
 
+**Der Umfang der ersten vollständigen Fassung steht in `MVP.md`** — mit
+Abnahmekriterien, Nicht-Zielen und offenen Entscheidungen.
+
 **Als Nächstes, in dieser Reihenfolge:**
 1. Fehlermeldungen bei schreibenden Aktionen *(offener Verstoß gegen `REGELN.md`)*
 2. Passwort-Anmeldung — kein Google, kein GitHub
