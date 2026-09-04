@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, useTransition } from 'react';
 import { portraet } from '@/lib/garten/portraet';
 import { verkleinern, groesse } from '@/lib/garten/bild-verkleinern';
 import { fruchtFuer } from '@/lib/garten/fruechte';
@@ -59,6 +59,25 @@ const ESSBAR = ['Gemüse', 'Obst', 'Kraut', 'Salat'];
 
 /** SVG-Zeichenketten der Zeichenlogik einbetten. */
 const svg = (inhalt: string) => ({ dangerouslySetInnerHTML: { __html: inhalt } });
+
+/**
+ * Wird mit dem Finger bedient? Am Handy lohnt ein eigener Kamera-Knopf, am
+ * Laptop nicht — dort führte er nur zum selben Dateidialog.
+ *
+ * Auf dem Server ist die Frage nicht beantwortbar; dort gilt „nein", damit die
+ * erste Darstellung im Browser dazu passt und nichts nachträglich umspringt.
+ */
+function useBeruehrung() {
+  return useSyncExternalStore(
+    (melden) => {
+      const abfrage = window.matchMedia('(pointer: coarse)');
+      abfrage.addEventListener('change', melden);
+      return () => abfrage.removeEventListener('change', melden);
+    },
+    () => window.matchMedia('(pointer: coarse)').matches,
+    () => false,
+  );
+}
 
 export default function GartenAnsicht({
   garten,
@@ -554,6 +573,8 @@ function Verlauf({
 }) {
   const bilder = fotosVon(p.id, garten.fotos);
   const dateiwahl = useRef<HTMLInputElement>(null);
+  const kamerawahl = useRef<HTMLInputElement>(null);
+  const amHandy = useBeruehrung();
   const [arbeitet, setArbeitet] = useState(false);
   const [fehler, setFehler] = useState('');
   const [bilanz, setBilanz] = useState('');
@@ -642,6 +663,29 @@ function Verlauf({
 
         {darfSchreiben && (
           <>
+            {amHandy && (
+              <>
+                <button
+                  type="button"
+                  className="foto-hinzu kamera"
+                  disabled={arbeitet}
+                  onClick={() => kamerawahl.current?.click()}
+                >
+                  <b>◉</b>
+                  {arbeitet ? 'lädt …' : 'Kamera'}
+                </button>
+                {/* `capture="environment"` öffnet direkt die Rückkamera,
+                    ohne den Umweg über die Auswahl Kamera/Galerie/Dateien. */}
+                <input
+                  ref={kamerawahl}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  hidden
+                  onChange={ausgewaehlt}
+                />
+              </>
+            )}
             <button
               type="button"
               className="foto-hinzu"
@@ -649,7 +693,7 @@ function Verlauf({
               onClick={() => dateiwahl.current?.click()}
             >
               <b>+</b>
-              {arbeitet ? 'lädt …' : 'Foto'}
+              {arbeitet ? 'lädt …' : amHandy ? 'Galerie' : 'Foto'}
             </button>
             <input
               ref={dateiwahl}
