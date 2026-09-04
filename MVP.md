@@ -7,8 +7,7 @@ vom 3. August und 4. September.
 
 ## Das Ziel in einem Satz
 
-**Anne pflegt ihren Garten vom Handy aus, und wer den Link bekommt, kann
-zuschauen.**
+**Anne pflegt ihren Garten vom Handy aus — überall, nicht nur zu Hause.**
 
 Alles andere ist Zugabe und kommt später.
 
@@ -16,10 +15,12 @@ Alles andere ist Zugabe und kommt später.
 
 ## Wer es benutzt
 
-| | |
-|---|---|
-| **Anne** | Steht mit der Gießkanne auf dem Balkon, hakt ab, fotografiert, trägt Ernten ein. Abends am Laptop schaut sie in Ruhe. |
-| **Besucher** | Bekommt einen Link, schaut sich den Garten an, liest die Geschichten. Ändert nichts. Meldet sich nicht an. |
+**Anne, und sonst niemand.** Sie steht mit der Gießkanne auf dem Balkon, hakt
+ab, fotografiert, trägt Ernten ein. Abends am Laptop schaut sie in Ruhe.
+
+Eine öffentliche Schauseite war früh einmal im Gespräch und wurde am
+4.9.2026 verworfen. Die Anwendung liegt damit vollständig hinter der
+Anmeldung — es gibt keinen Teil, den Fremde sehen.
 
 ---
 
@@ -35,10 +36,9 @@ Diese Sätze müssen am Ende alle stimmen — nachprüfbar, nicht gefühlt:
 3. Jeder Knopf, den sie draußen antippt, ist mindestens **44 Pixel hoch**.
 4. Sie fotografiert eine Pflanze mit der Kamera und das Bild erscheint im
    Wachstumsverlauf, richtig herum gedreht.
-5. Ein Besucher ohne Anmeldung sieht Beet, Vitrine, Pflanzen, Fotos und
-   Notizen — und kann **nichts** ändern, auch nicht an der Oberfläche vorbei.
-6. Die Seite hat eine Adresse, die Anne verschicken kann, und ist von überall
-   erreichbar.
+5. Wer nicht angemeldet ist, sieht **nichts** vom Garten — weder Seiten noch
+   Fotos, und auch nichts an der Oberfläche vorbei.
+6. Die Seite ist von überall erreichbar, nicht nur im heimischen WLAN.
 7. Auf dem Handy liegt ein Symbol, das die Seite im Vollbild öffnet.
 8. Die Rechenregeln für Wuchsstufen und Fälligkeiten sind durch Tests
    abgesichert.
@@ -101,9 +101,10 @@ Reiter Ernte → Pflanze wählen, Menge, Notiz → eintragen. Die Notiz ist der
 eigentliche Punkt: „es war meinem Mund eine Ehre" gehört genauso dazu wie die
 Zahl. Danach wächst die Ranke sichtbar weiter.
 
-**3. Herzeigen** — der Weg für alle anderen
-Link öffnen → Garten sehen, Beet, Vitrine, Pflanzen mit Fotos und Geschichten.
-Keine Anmeldung, keine Knöpfe, nichts kaputtzumachen.
+**3. Nachschlagen unterwegs** — der seltene, aber wichtige Weg
+Im Gartencenter stehen und wissen wollen, welche Erde die Paprika braucht oder
+ob sie schon zwei Basilikum hat. Dafür muss die Anwendung von außerhalb der
+Wohnung erreichbar sein.
 
 ---
 
@@ -125,10 +126,11 @@ Keine Anmeldung, keine Knöpfe, nichts kaputtzumachen.
 - Kein seitliches Scrollen. *(geprüft: aktuell erfüllt)*
 - Kamera direkt erreichbar. *(erfüllt)*
 
-### Öffentliche Ansicht
-- Sichtbar: Pflanzen, Pflegedaten, Notizen, Fotos, Beet, Vitrine, Ernten.
-- Nicht sichtbar: Knöpfe zum Ändern.
-- Nicht möglich: Änderungen über direkte Anfragen an den Server.
+### Abschottung
+- Ohne Anmeldung ist **nichts** erreichbar: keine Seite, keine Fotos, keine
+  Server-Aktion. Auch nicht über direkte Anfragen.
+- Fotos liegen unter `/bild/<id>` und brauchen dieselbe Prüfung wie die Seiten
+  — sonst wären Annes Bilder über eine geratene Nummer abrufbar.
 
 ### Betrieb
 - Läuft mit `node server.js`, nicht an einen Hoster gebunden. *(erfüllt und getestet)*

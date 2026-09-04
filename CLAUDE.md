@@ -81,8 +81,9 @@ Abnahmekriterien, Nicht-Zielen und offenen Entscheidungen.
 **Nicht gewollt:** Erinnerungen und Benachrichtigungen. Anne hat sich dagegen
 entschieden.
 
-**Entschieden:** Alle dürfen schauen, nur Anne trägt ein · Notizen öffentlich ·
-Handy und Laptop gleichrangig · neue Pflanzen legt sie selbst an, Pflegedaten
+**Entschieden:** Die Anwendung ist **nur für Anne** — alles liegt hinter der
+Anmeldung, es gibt keine öffentliche Ansicht *(eine Schauseite war früh im
+Gespräch und wurde am 4.9.2026 verworfen)* · Handy und Laptop gleichrangig · neue Pflanzen legt sie selbst an, Pflegedaten
 werden vorgeschlagen · Wetter schlägt vor, sie entscheidet · GitHub-Konto
 `KarClas`, Übertragung später möglich.
 
