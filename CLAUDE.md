@@ -1,4 +1,5 @@
 @AGENTS.md
+@REGELN.md
 
 # Annes Pflanzenparadies
 
@@ -145,7 +146,9 @@ Zustand — sie wandert weitgehend unverändert aus dem Artefakt in eigene Modul
 ## Technik in Kurzform
 
 **Die begründeten Entscheidungen stehen in `STACK.md`** — dort auch, wo die
-Ausgänge liegen, falls später etwas gewechselt werden soll.
+Ausgänge liegen, falls später etwas gewechselt werden soll. Wie hier gearbeitet
+wird — Fehlerbehandlung, Einfachheit, Umfang, Absicherung — steht in
+`REGELN.md` und wird über die Zeile ganz oben mitgeladen.
 
 Next.js (App Router) · PostgreSQL mit Drizzle · Auth.js mit Passwort ·
 Betrieb zunächst auf Vercel, aber durch `output: 'standalone'` nicht daran
